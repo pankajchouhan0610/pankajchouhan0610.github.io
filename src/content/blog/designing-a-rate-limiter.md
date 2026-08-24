@@ -17,18 +17,7 @@ draft: false
 featured: true
 trending: true
 ---
-```mermaid
-flowchart LR
-  Client --> API --> Cache
-  Cache --> DB
-```
-
- limiter decides whether a request may proceed. In interviews, the prompt is usually “protect an API.” In production, the prompt is “protect this API, this user, this IP, and this expensive endpoint, without adding a new outage mode.”
-
-```mermaid
-flowchart LR
-  Client --> API --> Cache --> DB
-```
+Pankaj's limiter decides whether a request may proceed. In interviews, the prompt is usually “protect an API.” In production, the prompt is “protect this API, this user, this IP, and this expensive endpoint, without adding a new outage mode.”
 
 ```mermaid
 flowchart LR
