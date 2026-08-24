@@ -1,21 +1,27 @@
 ---
-title: "How a URL Shortener Works"
-description: "System design for a URL shortener: encoding, storage, redirects, caching, and the abuse problems that appear at real traffic."
+title: How a URL Shortener Works
+description: "System design for a URL shortener: encoding, storage, redirects,
+  caching, and the abuse problems that appear at real traffic."
 pubDate: 2026-05-02
-author: "Pankaj Chauhan"
-category: "System Design"
+author: Pankaj Chauhan
+category: System Design
 tags:
   - System Design
   - HTTP
   - Databases
-heroImage: "/images/blog/url-shortener.svg"
-heroImageAlt: "Illustration of a long URL being compressed into a short code"
+heroImage: /images/blog/url-shortener.svg
+heroImageAlt: Illustration of a long URL being compressed into a short code
 draft: false
 featured: false
 trending: false
 ---
-
 A URL shortener maps a long URL to a short code and redirects clients that hit the short link. The product looks tiny. The production system is a write-light, read-heavy cache problem with a surprisingly sharp abuse edge.
+
+```mermaid
+flowchart LR
+  Client --> API --> Cache
+  Cache --> DB 
+```
 
 ## The write path
 
@@ -81,11 +87,11 @@ Click analytics should not live on this row. Append events to a log or a separat
 
 Open redirectors get used for phishing. You will need:
 
-- Blocklists for known bad domains
-- Rate limits on create
-- Captchas or auth for bulk creation
-- The ability to disable a code instantly
-- HTTPS-only redirects
+* Blocklists for known bad domains
+* Rate limits on create
+* Captchas or auth for bulk creation
+* The ability to disable a code instantly
+* HTTPS-only redirects
 
 Preview pages (an interstitial) reduce surprise for humans and add latency. Many public shorteners eventually add them for untrusted links.
 
@@ -95,9 +101,9 @@ The first bottleneck is usually not storage. It is generating unique codes under
 
 Techniques that help:
 
-- Single-flight cache fills
-- Partition codes by prefix
-- Pre-generate ID batches
-- Put the redirect API on a separate, boring stack from the dashboard
+* Single-flight cache fills
+* Partition codes by prefix
+* Pre-generate ID batches
+* Put the redirect API on a separate, boring stack from the dashboard
 
 A URL shortener is a good system-design exercise because every neat encoding trick still has to survive HTTP caching, spam, and a key that must not be guessed for private links. If links are sensitive, make codes long and unguessable. Base62 of a small autoincrement ID is not a secret.
