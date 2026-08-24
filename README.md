@@ -1,6 +1,6 @@
-# techlist
+# Pankaj
 
-Personal technology publication for software engineering, system design, distributed systems, databases, backend engineering, and AI.
+Personal technology blog by Pankaj Chauhan covering software engineering, system design, distributed systems, databases, backend engineering, and AI.
 
 Posts live in Git as Markdown. There is no application database. GitHub is the source of truth. GitHub Pages hosts the public site. The `/admin` editor works locally and is locked on the live site.
 
@@ -141,23 +141,11 @@ The repo must stay **public** for free GitHub Pages on a personal account.
 
 ## Admin security
 
-`/admin` is locked on the live GitHub Pages site. Visitors see a “not public” page. The editor script is not loaded.
+`/admin` asks for a **password only**. The editor does not load until the password is correct.
 
-Write posts in one of these ways:
+GitHub Pages is static, so the page checks a hash of the password in the browser. The plaintext password is not stored in the repository. This blocks casual visitors; it is not as strong as server-side auth.
 
-1. Locally: `npm run dev` and `npx decap-server`, then open http://localhost:4321/admin
-2. In GitHub: add/edit Markdown under `src/content/blog/`
-
-Do not set `PUBLIC_ENABLE_CMS=true` on GitHub Pages. GitHub Pages has no server for OAuth, so a public CMS there would not be safely authenticatable.
-
-If you later host on Cloudflare Pages and want a web editor in production:
-
-1. Create a GitHub OAuth App (callback `https://your-domain/api/auth`)
-2. Set secrets `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
-3. Set `PUBLIC_ENABLE_CMS=true`
-4. Only you (repo write access) can publish after GitHub login
-
-Never commit GitHub tokens.
+After unlock, Decap may still need GitHub permission to save posts on the live site. Locally, use `npm run dev` + `npx decap-server`. You can also edit Markdown under `src/content/blog/` on GitHub.
 
 ## Decap CMS (local)
 

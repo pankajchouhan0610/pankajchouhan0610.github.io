@@ -29,7 +29,7 @@ Two common ways to generate the code:
 ```text
 id = 125
 base62(125) -> "cb"
-https://techlist.dev/cb
+https://pankaj.dev/cb
 ```
 
 IDs are easier to reason about. You control uniqueness. You can shard the ID space. You can estimate capacity from key length: 6 base62 characters give about 56 billion codes.
@@ -42,7 +42,7 @@ A GET to the short path should be fast:
 
 ```http
 GET /cb HTTP/1.1
-Host: techlist.dev
+Host: pankaj.dev
 ```
 
 ```http

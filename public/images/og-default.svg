@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="techlist">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Pankaj">
   <rect width="1200" height="630" fill="#111"/>
   <circle cx="180" cy="315" r="54" fill="#e02424"/>
-  <text x="180" y="328" text-anchor="middle" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="700">t</text>
-  <text x="270" y="340" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700">techlist</text>
+  <text x="180" y="328" text-anchor="middle" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">P</text>
+  <text x="270" y="340" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700">Pankaj</text>
   <text x="270" y="400" fill="#a3a3a3" font-family="Inter, Arial, sans-serif" font-size="28">Engineering notes on systems and software</text>
 </svg>

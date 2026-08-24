@@ -1,8 +1,8 @@
 /** Site-wide identity used for SEO, RSS, CMS, and UI. */
-export const SITE_NAME = 'techlist';
+export const SITE_NAME = 'Pankaj';
 export const SITE_TAGLINE = 'Engineering notes on systems, software, and infrastructure.';
 export const SITE_DESCRIPTION =
-  'A personal technology publication covering software engineering, system design, distributed systems, databases, backend engineering, and AI.';
+  'Personal writing by Pankaj Chauhan on software engineering, system design, distributed systems, databases, backend engineering, and AI.';
 
 export const AUTHOR_NAME = 'Pankaj Chauhan';
 export const AUTHOR_ROLE = 'Software Engineer';
