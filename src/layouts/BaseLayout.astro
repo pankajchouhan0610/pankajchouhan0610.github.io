@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Seo from '../components/Seo.astro';
+import JsonLd from '../components/JsonLd.astro';
+import type { BlogPost } from '../lib/posts';
+
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  image?: string;
+  imageAlt?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  tags?: string[];
+  section?: string;
+  noindex?: boolean;
+  jsonLd?: unknown | unknown[];
+  posts: BlogPost[];
+}
+
+const { jsonLd, posts, ...seo } = Astro.props;
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {
+          document.documentElement.classList.toggle(
+            'dark',
+            window.matchMedia('(prefers-color-scheme: dark)').matches,
+          );
+        }
+      })();
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <Seo {...seo} />
+    {schemas.map((schema) => <JsonLd data={schema} />)}
+  </head>
+  <body class="min-h-screen bg-[var(--page)] text-[var(--ink)]">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header posts={posts} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer posts={posts} />
+  </body>
+</html>

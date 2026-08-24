@@ -1,0 +1,60 @@
+---
+export const prerender = true;
+
+const cmsEnabled = import.meta.env.DEV || import.meta.env.PUBLIC_ENABLE_CMS === 'true';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>{cmsEnabled ? 'Content editor | techlist' : 'Admin unavailable | techlist'}</title>
+    {cmsEnabled && <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />}
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, system-ui, sans-serif;
+        background: #111;
+        color: #f4f4f4;
+      }
+      .locked {
+        max-width: 36rem;
+        margin: 20vh auto 0;
+        padding: 0 1.5rem;
+        text-align: center;
+      }
+      .locked h1 {
+        font-size: 1.6rem;
+      }
+      .locked p {
+        color: #a3a3a3;
+        line-height: 1.6;
+      }
+      .locked a {
+        color: #ff4d4d;
+      }
+    </style>
+  </head>
+  <body>
+    {
+      cmsEnabled ? (
+        <script is:inline src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
+      ) : (
+        <main class="locked">
+          <h1>Admin is not public</h1>
+          <p>
+            The editor is disabled on the live site so strangers cannot open it.
+            Write posts locally at <code>http://localhost:4321/admin</code>, or add Markdown files
+            in the GitHub repository.
+          </p>
+          <p>
+            <a href="/">Back to the homepage</a>
+          </p>
+        </main>
+      )
+    }
+  </body>
+</html>

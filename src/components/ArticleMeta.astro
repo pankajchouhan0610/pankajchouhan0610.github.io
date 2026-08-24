@@ -1,0 +1,37 @@
+---
+import { formatDate } from '../lib/dates';
+
+interface Props {
+  author: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  readingTime?: string;
+  relative?: string;
+}
+
+const { author, pubDate, updatedDate, readingTime, relative } = Astro.props;
+---
+
+<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-[var(--muted)]">
+  <span>{author}</span>
+  <span aria-hidden="true">,</span>
+  <time datetime={pubDate.toISOString()}>{relative ?? formatDate(pubDate)}</time>
+  {
+    updatedDate && (
+      <>
+        <span aria-hidden="true">·</span>
+        <span>
+          Updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+        </span>
+      </>
+    )
+  }
+  {
+    readingTime && (
+      <>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime}</span>
+      </>
+    )
+  }
+</div>

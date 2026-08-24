@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import type { BlogPost } from '../lib/posts';
+
+interface Props {
+  title: string;
+  description: string;
+  heading?: string;
+  intro?: string;
+  posts: BlogPost[];
+  allPosts: BlogPost[];
+  jsonLd?: unknown | unknown[];
+  emptyMessage?: string;
+}
+
+const {
+  title,
+  description,
+  heading,
+  intro,
+  posts,
+  allPosts,
+  jsonLd,
+  emptyMessage = 'No articles in this feed yet.',
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} posts={allPosts} jsonLd={jsonLd}>
+  <div class="mx-auto max-w-[1080px] px-5 md:px-8">
+    {
+      heading ? (
+        <header class="border-b border-[var(--line)] py-8">
+          <h1 class="text-2xl font-bold tracking-tight">{heading}</h1>
+          {intro && <p class="mt-2 max-w-2xl text-[var(--muted)]">{intro}</p>}
+        </header>
+      ) : (
+        <h1 class="sr-only">{title}</h1>
+      )
+    }
+    {
+      posts.length > 0 ? (
+        posts.map((post, index) => <ArticleCard post={post} eager={index < 2} />)
+      ) : (
+        <p class="py-16 text-[var(--muted)]">{emptyMessage}</p>
+      )
+    }
+  </div>
+</BaseLayout>

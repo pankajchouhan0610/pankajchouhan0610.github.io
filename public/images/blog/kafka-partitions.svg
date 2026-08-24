@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Kafka partitions">
+  <rect width="1200" height="800" fill="#111"/>
+  <g fill="none" stroke-width="28" stroke-linecap="round">
+    <path d="M80 220h1040" stroke="#e02424"/>
+    <path d="M80 400h1040" stroke="#f4f4f4"/>
+    <path d="M80 580h1040" stroke="#737373"/>
+  </g>
+  <g fill="#e02424">
+    <circle cx="260" cy="220" r="18"/>
+    <circle cx="640" cy="400" r="18"/>
+    <circle cx="980" cy="580" r="18"/>
+  </g>
+</svg>

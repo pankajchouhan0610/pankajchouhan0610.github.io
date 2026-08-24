@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import CategoryBadge from '../../components/CategoryBadge.astro';
+import { PAGE_SIZE, SITE_NAME } from '../../consts';
+import { getPublishedPosts, paginate, uniqueCategories } from '../../lib/posts';
+import { collectionJsonLd } from '../../lib/seo';
+import { FALLBACK_SITE_URL } from '../../consts';
+import { canonicalFromPath } from '../../lib/urls';
+
+const allPosts = await getPublishedPosts();
+const categories = uniqueCategories(allPosts);
+const { items, page, totalPages } = paginate(allPosts, 1, PAGE_SIZE);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath('/blog', site);
+---
+
+<BaseLayout
+  title={`Blog | ${SITE_NAME}`}
+  description={`All engineering articles published on ${SITE_NAME}, covering system design, distributed systems, databases, backend engineering, and AI.`}
+  posts={allPosts}
+  jsonLd={collectionJsonLd(site, `Blog | ${SITE_NAME}`, `All articles on ${SITE_NAME}.`, url)}
+>
+  <div class="mx-auto max-w-[1080px] px-5 md:px-8">
+    <header class="border-b border-[var(--line)] py-10">
+      <h1 class="text-3xl font-bold tracking-tight">All articles</h1>
+      <p class="mt-2 max-w-2xl text-[var(--muted)]">
+        Practical writing on software engineering, infrastructure, and the systems behind production software.
+      </p>
+      {
+        categories.length > 0 && (
+          <div class="mt-6 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <CategoryBadge category={category} />
+            ))}
+          </div>
+        )
+      }
+    </header>
+    {items.map((post, index) => <ArticleCard post={post} eager={index < 2} />)}
+    <Pagination page={page} totalPages={totalPages} basePath="/blog" />
+  </div>
+</BaseLayout>

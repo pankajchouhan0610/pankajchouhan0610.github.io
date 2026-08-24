@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Rate limiter token bucket">
+  <rect width="1200" height="800" fill="#f7f7f7"/>
+  <path d="M430 140h340l-70 520H500z" fill="#111"/>
+  <circle cx="600" cy="280" r="36" fill="#e02424"/>
+  <circle cx="600" cy="390" r="36" fill="#e02424"/>
+  <circle cx="600" cy="500" r="36" fill="#4b4b4b"/>
+  <rect x="760" y="360" width="280" height="80" fill="#e02424"/>
+  <rect x="160" y="360" width="200" height="80" fill="#d4d4d4"/>
+</svg>

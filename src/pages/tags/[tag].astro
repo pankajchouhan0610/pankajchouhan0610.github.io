@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { SITE_NAME } from '../../consts';
+import { findTagLabel, getPublishedPosts, postsByTag, uniqueTags } from '../../lib/posts';
+import { collectionJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+import { FALLBACK_SITE_URL } from '../../consts';
+import { canonicalFromPath, slugify, tagUrl } from '../../lib/urls';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return uniqueTags(posts).map((tag) => ({
+    params: { tag: slugify(tag) },
+  }));
+}
+
+const slug = Astro.params.tag!;
+const allPosts = await getPublishedPosts();
+const label = findTagLabel(allPosts, slug);
+
+if (!label) {
+  throw new Error(`Unknown tag slug: ${slug}`);
+}
+
+const posts = postsByTag(allPosts, slug);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath(tagUrl(label), site);
+const description = `Articles tagged ${label} on ${SITE_NAME}.`;
+---
+
+<BaseLayout
+  title={`#${label} | ${SITE_NAME}`}
+  description={description}
+  posts={allPosts}
+  jsonLd={[
+    collectionJsonLd(site, `${label} articles`, description, url),
+    breadcrumbJsonLd(site, [
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: label, path: tagUrl(label) },
+    ]),
+  ]}
+>
+  <div class="mx-auto max-w-[1080px] px-5 md:px-8">
+    <header class="border-b border-[var(--line)] py-10">
+      <p class="text-sm text-[var(--muted)]">Tag</p>
+      <h1 class="mt-1 text-3xl font-bold tracking-tight">{label}</h1>
+      <p class="mt-2 text-[var(--muted)]">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+    </header>
+    {posts.map((post, index) => <ArticleCard post={post} eager={index < 2} />)}
+  </div>
+</BaseLayout>

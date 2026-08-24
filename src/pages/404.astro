@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../consts';
+import { getPublishedPosts } from '../lib/posts';
+
+const allPosts = await getPublishedPosts();
+---
+
+<BaseLayout
+  title={`Page not found | ${SITE_NAME}`}
+  description="The page you requested does not exist."
+  noindex={true}
+  posts={allPosts}
+>
+  <div class="mx-auto max-w-[720px] px-5 py-24 text-center md:px-8">
+    <p class="text-sm text-[var(--muted)]">404</p>
+    <h1 class="mt-2 text-3xl font-bold">Page not found</h1>
+    <p class="mt-3 text-[var(--muted)]">That URL does not match a published article or page.</p>
+    <p class="mt-6">
+      <a class="font-medium underline underline-offset-4" href="/">Back to the homepage</a>
+    </p>
+  </div>
+</BaseLayout>

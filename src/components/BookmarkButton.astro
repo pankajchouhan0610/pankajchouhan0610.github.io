@@ -1,0 +1,66 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<button
+  type="button"
+  class="bookmark-button inline-flex h-9 w-9 items-center justify-center text-[var(--muted)] hover:text-[var(--accent)]"
+  data-bookmark={slug}
+  aria-pressed="false"
+  aria-label="Save article"
+>
+  <svg class="bookmark-outline h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.2L7 20V5a1 1 0 0 1 1-1z"></path>
+  </svg>
+  <svg class="bookmark-filled hidden h-[18px] w-[18px] text-[var(--accent)]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M7 3h10a2 2 0 0 1 2 2v16l-7-3.7L5 21V5a2 2 0 0 1 2-2z"></path>
+  </svg>
+</button>
+
+<script>
+  const STORAGE_KEY = 'techlist:bookmarks';
+
+  function readBookmarks(): string[] {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as string[]) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeBookmarks(slugs: string[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(slugs));
+  }
+
+  function syncButtons() {
+    const saved = new Set(readBookmarks());
+    document.querySelectorAll<HTMLButtonElement>('[data-bookmark]').forEach((button) => {
+      const slug = button.dataset.bookmark ?? '';
+      const active = saved.has(slug);
+      button.setAttribute('aria-pressed', String(active));
+      button.setAttribute('aria-label', active ? 'Remove saved article' : 'Save article');
+      button.querySelector('.bookmark-outline')?.classList.toggle('hidden', active);
+      button.querySelector('.bookmark-filled')?.classList.toggle('hidden', !active);
+    });
+  }
+
+  syncButtons();
+
+  document.querySelectorAll<HTMLButtonElement>('[data-bookmark]').forEach((button) => {
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+    button.addEventListener('click', () => {
+      const slug = button.dataset.bookmark ?? '';
+      const next = new Set(readBookmarks());
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      writeBookmarks([...next]);
+      syncButtons();
+    });
+  });
+</script>

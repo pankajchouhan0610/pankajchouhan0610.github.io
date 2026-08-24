@@ -1,0 +1,20 @@
+---
+import FeedLayout from '../layouts/FeedLayout.astro';
+import { SITE_DESCRIPTION, SITE_NAME } from '../consts';
+import { getPublishedPosts } from '../lib/posts';
+import { collectionJsonLd } from '../lib/seo';
+import { FALLBACK_SITE_URL } from '../consts';
+import { canonicalFromPath } from '../lib/urls';
+
+const allPosts = await getPublishedPosts();
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath('/latest', site);
+---
+
+<FeedLayout
+  title={`Latest | ${SITE_NAME}`}
+  description={`The latest software engineering articles on ${SITE_NAME}.`}
+  posts={allPosts}
+  allPosts={allPosts}
+  jsonLd={collectionJsonLd(site, `Latest | ${SITE_NAME}`, SITE_DESCRIPTION, url)}
+/>

@@ -1,0 +1,19 @@
+---
+import FeedLayout from '../layouts/FeedLayout.astro';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from '../consts';
+import { getPopularPosts, getPublishedPosts } from '../lib/posts';
+import { blogJsonLd, websiteJsonLd } from '../lib/seo';
+import { FALLBACK_SITE_URL } from '../consts';
+
+const allPosts = await getPublishedPosts();
+const posts = getPopularPosts(allPosts);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+---
+
+<FeedLayout
+  title={`${SITE_NAME} — ${SITE_TAGLINE}`}
+  description={SITE_DESCRIPTION}
+  posts={posts}
+  allPosts={allPosts}
+  jsonLd={[websiteJsonLd(site), blogJsonLd(site)]}
+/>

@@ -1,0 +1,90 @@
+---
+interface Props {
+  initialQuery?: string;
+}
+
+const { initialQuery = '' } = Astro.props;
+---
+
+<div data-search-root>
+  <form method="get" action="/search" role="search">
+    <label class="sr-only" for="search-input">Search articles</label>
+    <input
+      id="search-input"
+      name="q"
+      type="search"
+      value={initialQuery}
+      placeholder="Search titles, tags, and topics"
+      class="w-full border border-[var(--line)] bg-[var(--page)] px-4 py-3 text-base"
+      autocomplete="off"
+      data-search-input
+    />
+  </form>
+  <p class="mt-4 text-sm text-[var(--muted)]" data-search-status></p>
+  <ul class="mt-6 divide-y divide-[var(--line)]" data-search-results></ul>
+</div>
+
+<script>
+  type SearchEntry = {
+    title: string;
+    description: string;
+    category: string;
+    tags: string[];
+    url: string;
+  };
+
+  const root = document.querySelector('[data-search-root]');
+  const input = root?.querySelector<HTMLInputElement>('[data-search-input]');
+  const results = root?.querySelector('[data-search-results]');
+  const status = root?.querySelector('[data-search-status]');
+  let index: SearchEntry[] = [];
+
+  function matches(entry: SearchEntry, query: string) {
+    const haystack = [entry.title, entry.description, entry.category, ...entry.tags]
+      .join(' ')
+      .toLowerCase();
+    return haystack.includes(query);
+  }
+
+  function render(query: string) {
+    if (!results || !status) return;
+    const normalized = query.trim().toLowerCase();
+
+    if (!normalized) {
+      results.innerHTML = '';
+      status.textContent = 'Start typing to search published articles.';
+      return;
+    }
+
+    const hits = index.filter((entry) => matches(entry, normalized)).slice(0, 20);
+    status.textContent = hits.length === 1 ? '1 result' : `${hits.length} results`;
+    results.innerHTML = hits
+      .map(
+        (entry) => `
+          <li class="py-4">
+            <a class="font-semibold hover:text-[var(--accent)]" href="${entry.url}">${escapeHtml(entry.title)}</a>
+            <p class="mt-1 text-sm text-[var(--muted)]">${escapeHtml(entry.description)}</p>
+          </li>`,
+      )
+      .join('');
+  }
+
+  function escapeHtml(value: string) {
+    return value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+  }
+
+  async function init() {
+    const response = await fetch('/search-index.json');
+    index = (await response.json()) as SearchEntry[];
+    const fromUrl = new URLSearchParams(window.location.search).get('q');
+    if (input && fromUrl) input.value = fromUrl;
+    render(input?.value ?? '');
+  }
+
+  input?.addEventListener('input', () => render(input.value));
+  init();
+</script>

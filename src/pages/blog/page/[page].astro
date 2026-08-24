@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { PAGE_SIZE, SITE_NAME } from '../../../consts';
+import { getPublishedPosts, paginate } from '../../../lib/posts';
+import { collectionJsonLd } from '../../../lib/seo';
+import { FALLBACK_SITE_URL } from '../../../consts';
+import { canonicalFromPath } from '../../../lib/urls';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+
+  return Array.from({ length: totalPages }, (_, index) => ({
+    params: { page: String(index + 1) },
+  })).filter((entry) => entry.params.page !== '1');
+}
+
+const pageNumber = Number(Astro.params.page);
+const allPosts = await getPublishedPosts();
+const { items, page, totalPages } = paginate(allPosts, pageNumber, PAGE_SIZE);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath(`/blog/page/${page}`, site);
+---
+
+<BaseLayout
+  title={`Blog · Page ${page} | ${SITE_NAME}`}
+  description={`Page ${page} of engineering articles on ${SITE_NAME}.`}
+  posts={allPosts}
+  jsonLd={collectionJsonLd(site, `Blog page ${page}`, `Articles on ${SITE_NAME}.`, url)}
+>
+  <div class="mx-auto max-w-[1080px] px-5 md:px-8">
+    <header class="border-b border-[var(--line)] py-10">
+      <h1 class="text-3xl font-bold tracking-tight">All articles</h1>
+      <p class="mt-2 text-[var(--muted)]">Page {page} of {totalPages}</p>
+    </header>
+    {items.map((post) => <ArticleCard post={post} />)}
+    <Pagination page={page} totalPages={totalPages} basePath="/blog" />
+  </div>
+</BaseLayout>

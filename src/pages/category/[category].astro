@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { SITE_NAME } from '../../consts';
+import {
+  findCategoryLabel,
+  getPublishedPosts,
+  postsByCategory,
+  uniqueCategories,
+} from '../../lib/posts';
+import { collectionJsonLd, breadcrumbJsonLd } from '../../lib/seo';
+import { FALLBACK_SITE_URL } from '../../consts';
+import { canonicalFromPath, categoryUrl, slugify } from '../../lib/urls';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return uniqueCategories(posts).map((category) => ({
+    params: { category: slugify(category) },
+  }));
+}
+
+const slug = Astro.params.category!;
+const allPosts = await getPublishedPosts();
+const label = findCategoryLabel(allPosts, slug);
+
+if (!label) {
+  throw new Error(`Unknown category slug: ${slug}`);
+}
+
+const posts = postsByCategory(allPosts, slug);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath(categoryUrl(label), site);
+const description = `Articles in ${label} on ${SITE_NAME}. Engineering writing on software, infrastructure, and systems.`;
+---
+
+<BaseLayout
+  title={`${label} | ${SITE_NAME}`}
+  description={description}
+  posts={allPosts}
+  jsonLd={[
+    collectionJsonLd(site, `${label} articles`, description, url),
+    breadcrumbJsonLd(site, [
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: label, path: categoryUrl(label) },
+    ]),
+  ]}
+>
+  <div class="mx-auto max-w-[1080px] px-5 md:px-8">
+    <header class="border-b border-[var(--line)] py-10">
+      <p class="text-sm text-[var(--muted)]">Category</p>
+      <h1 class="mt-1 text-3xl font-bold tracking-tight">{label}</h1>
+      <p class="mt-2 text-[var(--muted)]">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+    </header>
+    {posts.map((post, index) => <ArticleCard post={post} eager={index < 2} />)}
+  </div>
+</BaseLayout>

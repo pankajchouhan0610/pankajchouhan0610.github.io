@@ -1,0 +1,21 @@
+---
+import FeedLayout from '../layouts/FeedLayout.astro';
+import { SITE_DESCRIPTION, SITE_NAME } from '../consts';
+import { getPublishedPosts, getTrendingPosts } from '../lib/posts';
+import { collectionJsonLd } from '../lib/seo';
+import { FALLBACK_SITE_URL } from '../consts';
+import { canonicalFromPath } from '../lib/urls';
+
+const allPosts = await getPublishedPosts();
+const posts = getTrendingPosts(allPosts);
+const site = Astro.site?.href ?? FALLBACK_SITE_URL;
+const url = canonicalFromPath('/trending', site);
+---
+
+<FeedLayout
+  title={`Trending | ${SITE_NAME}`}
+  description={`Trending engineering articles on ${SITE_NAME}. ${SITE_DESCRIPTION}`}
+  posts={posts}
+  allPosts={allPosts}
+  jsonLd={collectionJsonLd(site, `Trending | ${SITE_NAME}`, SITE_DESCRIPTION, url)}
+/>

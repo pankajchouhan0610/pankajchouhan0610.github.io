@@ -1,0 +1,38 @@
+---
+interface Props {
+  page: number;
+  totalPages: number;
+  basePath: string;
+}
+
+const { page, totalPages, basePath } = Astro.props;
+
+function hrefFor(target: number) {
+  if (target <= 1) return basePath;
+  return `${basePath}/page/${target}`;
+}
+---
+
+{
+  totalPages > 1 && (
+    <nav class="mt-10 flex items-center justify-between border-t border-[var(--line)] pt-6 text-sm" aria-label="Pagination">
+      {page > 1 ? (
+        <a class="font-medium hover:text-[var(--accent)]" href={hrefFor(page - 1)}>
+          Previous
+        </a>
+      ) : (
+        <span class="text-[var(--muted)]">Previous</span>
+      )}
+      <p class="text-[var(--muted)]">
+        Page {page} of {totalPages}
+      </p>
+      {page < totalPages ? (
+        <a class="font-medium hover:text-[var(--accent)]" href={hrefFor(page + 1)}>
+          Next
+        </a>
+      ) : (
+        <span class="text-[var(--muted)]">Next</span>
+      )}
+    </nav>
+  )
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Redis distributed lock">
+  <rect width="1200" height="800" fill="#1a1a1a"/>
+  <rect x="80" y="80" width="1040" height="640" fill="#221616"/>
+  <g fill="none" stroke="#e02424" stroke-width="2" opacity="0.35">
+    <path d="M80 220h1040M80 360h1040M80 500h1040M80 640h1040"/>
+    <path d="M280 80v640M480 80v640M680 80v640M880 80v640"/>
+  </g>
+  <rect x="455" y="250" width="290" height="220" rx="18" fill="#e02424"/>
+  <path d="M545 250v-48a55 55 0 0 1 110 0v48" fill="none" stroke="#f4f4f4" stroke-width="22"/>
+  <circle cx="600" cy="360" r="22" fill="#111"/>
+  <rect x="592" y="360" width="16" height="48" rx="4" fill="#111"/>
+</svg>

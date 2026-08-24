@@ -1,0 +1,135 @@
+---
+import { NAV_FEEDS } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+import Logo from './Logo.astro';
+import { uniqueCategories } from '../lib/posts';
+import { categoryUrl } from '../lib/urls';
+import type { BlogPost } from '../lib/posts';
+
+interface Props {
+  posts: BlogPost[];
+}
+
+const { posts } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const categories = uniqueCategories(posts);
+---
+
+<header class="border-b border-[var(--line)]">
+  <div class="mx-auto flex h-16 max-w-[1080px] items-center gap-2 px-5 md:gap-4 md:px-8">
+    <Logo />
+
+    <button
+      type="button"
+      class="menu-button flex h-10 w-10 shrink-0 items-center justify-center text-[var(--ink)]"
+      data-menu-open
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label="Open menu"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </svg>
+    </button>
+
+    <nav class="hidden min-w-0 flex-1 items-stretch justify-center self-stretch sm:flex" aria-label="Article feeds">
+      <ul class="flex items-stretch gap-6 md:gap-10">
+        {
+          NAV_FEEDS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <li class="flex">
+                <a
+                  href={item.href}
+                  class:list={[
+                    'relative flex items-center text-[0.95rem] font-medium',
+                    active ? 'text-[var(--ink)]' : 'text-[var(--muted)] hover:text-[var(--ink)]',
+                  ]}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                  {active && <span class="absolute inset-x-0 -bottom-px h-[2px] bg-[var(--ink)]"></span>}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex shrink-0 items-center">
+      <a
+        href="/search"
+        class="search-open flex h-10 w-10 items-center justify-center text-[var(--ink)]"
+        data-search-open
+        aria-label="Search articles"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+      </a>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<div id="site-menu" class="menu-drawer hidden" role="dialog" aria-modal="true" aria-label="Site menu">
+  <button type="button" class="absolute inset-0 bg-black/30" data-menu-close aria-label="Close menu"></button>
+  <div class="relative z-10 h-full w-[min(20rem,86vw)] bg-[var(--page)] p-6 shadow-xl">
+    <div class="mb-6 flex items-center justify-between">
+      <p class="text-sm font-semibold">Menu</p>
+      <button type="button" class="h-10 w-10" data-menu-close aria-label="Close menu">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <nav aria-label="Primary">
+      <ul class="space-y-3 text-[1.05rem]">
+        <li><a href="/" class="hover:text-[var(--accent)]">Popular</a></li>
+        <li><a href="/trending" class="hover:text-[var(--accent)]">Trending</a></li>
+        <li><a href="/latest" class="hover:text-[var(--accent)]">Latest</a></li>
+        <li><a href="/blog" class="hover:text-[var(--accent)]">All articles</a></li>
+        <li><a href="/about" class="hover:text-[var(--accent)]">About</a></li>
+        <li><a href="/search" class="hover:text-[var(--accent)]">Search</a></li>
+      </ul>
+      {
+        categories.length > 0 && (
+          <div class="mt-8">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">Categories</p>
+            <ul class="space-y-2">
+              {categories.map((category) => (
+                <li>
+                  <a href={categoryUrl(category)} class="text-[var(--ink)] hover:text-[var(--accent)]">
+                    {category}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </nav>
+  </div>
+</div>
+
+<script>
+  const menu = document.getElementById('site-menu');
+  const openButton = document.querySelector('[data-menu-open]');
+
+  function setMenu(open: boolean) {
+    menu?.classList.toggle('hidden', !open);
+    menu?.classList.toggle('fixed', open);
+    menu?.classList.toggle('inset-0', open);
+    menu?.classList.toggle('z-50', open);
+    openButton?.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  openButton?.addEventListener('click', () => setMenu(true));
+  menu?.querySelectorAll('[data-menu-close]').forEach((el) => {
+    el.addEventListener('click', () => setMenu(false));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenu(false);
+  });
+</script>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Search from '../components/Search.astro';
+import { SITE_NAME } from '../consts';
+import { getPublishedPosts } from '../lib/posts';
+
+const allPosts = await getPublishedPosts();
+const initialQuery = Astro.url.searchParams.get('q') ?? '';
+---
+
+<BaseLayout
+  title={`Search | ${SITE_NAME}`}
+  description={`Search engineering articles on ${SITE_NAME}.`}
+  noindex={true}
+  posts={allPosts}
+>
+  <div class="mx-auto max-w-[720px] px-5 py-12 md:px-8">
+    <h1 class="text-3xl font-bold tracking-tight">Search</h1>
+    <div class="mt-6">
+      <Search initialQuery={initialQuery} />
+    </div>
+  </div>
+</BaseLayout>

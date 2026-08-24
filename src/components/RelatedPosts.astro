@@ -1,0 +1,30 @@
+---
+import type { BlogPost } from '../lib/posts';
+import { postUrl } from '../lib/urls';
+
+interface Props {
+  posts: BlogPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="mt-16 border-t border-[var(--line)] pt-10" aria-labelledby="related-heading">
+      <h2 id="related-heading" class="text-lg font-bold">
+        Related articles
+      </h2>
+      <ul class="mt-5 divide-y divide-[var(--line)]">
+        {posts.map((post) => (
+          <li class="py-4">
+            <a class="font-semibold hover:text-[var(--accent)]" href={postUrl(post.id)}>
+              {post.data.title}
+            </a>
+            <p class="mt-1 text-sm text-[var(--muted)]">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

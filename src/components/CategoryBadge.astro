@@ -1,0 +1,16 @@
+---
+import { categoryUrl } from '../lib/urls';
+
+interface Props {
+  category: string;
+}
+
+const { category } = Astro.props;
+---
+
+<a
+  href={categoryUrl(category)}
+  class="inline-flex items-center rounded-sm bg-[var(--tag)] px-2 py-0.5 text-[0.72rem] font-medium text-[var(--tag-text)] no-underline hover:text-[var(--ink)]"
+>
+  {category}
+</a>
