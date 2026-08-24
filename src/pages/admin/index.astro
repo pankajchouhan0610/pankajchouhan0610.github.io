@@ -153,11 +153,19 @@ const auth = getAdminAuthConfig();
         const link = document.createElement('link');
         link.rel = 'cms-config-url';
         link.type = 'text/yaml';
-        // Use the Cloudflare Function so base_url matches the current domain.
-        link.href = '/api/cms-config';
+        // Local Astro serves /admin/config.yml. Cloudflare serves /api/cms-config.
+        const isLocal =
+          location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        link.href = isLocal ? '/admin/config.yml' : '/api/cms-config';
         document.head.appendChild(link);
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js';
+        // After Decap loads, register the Mermaid insert button for the markdown editor.
+        script.onload = () => {
+          const helper = document.createElement('script');
+          helper.src = '/admin/mermaid-editor.js';
+          document.body.appendChild(helper);
+        };
         document.body.appendChild(script);
       }
 

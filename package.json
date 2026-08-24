@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "pages:deploy": "npm run build && wrangler pages deploy dist --project-name=pankaj"
+    "pages:deploy": "npm run build && npx wrangler pages deploy dist --project-name=pankaj --commit-dirty=true"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
@@ -19,6 +19,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.4",
+    "mermaid": "^11.17.0",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

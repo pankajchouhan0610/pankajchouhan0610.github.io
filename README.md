@@ -104,6 +104,19 @@ Decap uploads land in that folder. Prefer SVG or compressed PNG/WebP. Always set
 
 Open Graph tags currently fall back to `/images/og-default.svg`. Replace that file with a 1200×630 PNG named `/images/og-default.png` for the most reliable social previews, then update the fallback in `src/components/Seo.astro` if needed.
 
+## Diagrams (no images)
+
+Prefer **Mermaid** for architecture / flow diagrams. Put this in the post body:
+
+````md
+```mermaid
+flowchart LR
+  Client --> API --> DB
+```
+````
+
+In Decap, use the **Mermaid diagram** editor button, or paste a `mermaid` code fence. The blog renders it as a diagram — nothing is uploaded to `public/images`.
+
 ## SEO
 
 Every page emits:

@@ -79,8 +79,16 @@ function corsHeaders(origin) {
 }
 
 function oauthPage(status, content) {
-  // Decap requires this exact message shape. Use "*" so custom domains work.
-  const message = `authorization:github:${status}:${JSON.stringify(content)}`;
+  // Decap's handshake (decap-cms-lib-auth):
+  // 1) popup sends "authorizing:github"
+  // 2) parent echoes that message back to the popup
+  // 3) popup then sends "authorization:github:success:{token JSON}"
+  // Posting success immediately (without the handshake) leaves the login screen stuck.
+  const provider = 'github';
+  const successMessage = JSON.stringify(
+    `authorization:${provider}:${status}:${JSON.stringify(content)}`,
+  );
+  const authorizingMessage = JSON.stringify(`authorizing:${provider}`);
   const html = `<!doctype html>
 <html lang="en">
   <head>
@@ -88,14 +96,25 @@ function oauthPage(status, content) {
     <title>GitHub authorization</title>
   </head>
   <body>
-    <p>Authentication ${status}. You can close this window.</p>
+    <p>Authentication ${status}. Completing login&hellip;</p>
     <script>
       (function () {
-        var receive = window.opener || window.parent;
-        if (receive) {
-          receive.postMessage(${JSON.stringify(message)}, "*");
+        function receiveMessage(e) {
+          // Parent echoed "authorizing:github" — now send the token to that origin.
+          console.log("decap oauth handshake reply", e.origin, e.data);
+          window.opener.postMessage(${successMessage}, e.origin);
         }
-        setTimeout(function () { window.close(); }, 100);
+
+        window.addEventListener("message", receiveMessage, false);
+
+        // Start handshake with Decap parent window.
+        console.log("decap oauth: sending", ${authorizingMessage});
+        if (window.opener) {
+          window.opener.postMessage(${authorizingMessage}, "*");
+        } else {
+          document.body.innerHTML =
+            "<p>Login popup lost its opener. Close this window and try Login with GitHub again.</p>";
+        }
       })();
     </script>
   </body>
@@ -104,6 +123,8 @@ function oauthPage(status, content) {
   return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
+      // Avoid COOP breaking window.opener after the GitHub redirect.
+      'Cross-Origin-Opener-Policy': 'unsafe-none',
       ...corsHeaders('*'),
     },
   });

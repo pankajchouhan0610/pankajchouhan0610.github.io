@@ -1,0 +1,115 @@
+---
+/**
+ * Finds ```mermaid code blocks in the article and renders them as diagrams.
+ * Source stays as text in Markdown — no image uploads required.
+ */
+---
+
+<script>
+  /** @type {{ el: HTMLElement; source: string }[]} */
+  const diagrams = [];
+  let renderPass = 0;
+  /** @type {typeof import('mermaid').default | null} */
+  let mermaidLib = null;
+
+  function isDarkMode() {
+    return document.documentElement.classList.contains('dark');
+  }
+
+  function findMermaidBlocks() {
+    return Array.from(
+      document.querySelectorAll(
+        '.prose pre[data-language="mermaid"], .prose pre.language-mermaid',
+      ),
+    );
+  }
+
+  /** @param {HTMLElement} pre */
+  function extractSource(pre) {
+    const code = pre.querySelector('code');
+    return (code?.textContent ?? pre.textContent ?? '').trim();
+  }
+
+  async function getMermaid() {
+    if (!mermaidLib) {
+      // Load Mermaid only when a post actually contains a diagram.
+      const mod = await import('mermaid');
+      mermaidLib = mod.default;
+    }
+    return mermaidLib;
+  }
+
+  /**
+   * @param {{ el: HTMLElement; source: string }} node
+   * @param {number} index
+   */
+  async function drawDiagram(node, index) {
+    const mermaid = await getMermaid();
+    const theme = isDarkMode() ? 'dark' : 'neutral';
+    mermaid.initialize({
+      startOnLoad: false,
+      theme,
+      securityLevel: 'strict',
+      fontFamily: 'inherit',
+      flowchart: { htmlLabels: false, curve: 'basis' },
+    });
+
+    const id = `mermaid-diagram-${renderPass}-${index}`;
+    try {
+      const { svg } = await mermaid.render(id, node.source);
+      node.el.innerHTML = svg;
+      node.el.removeAttribute('data-mermaid-error');
+    } catch (error) {
+      console.error('Mermaid render failed', error);
+      node.el.setAttribute('data-mermaid-error', 'true');
+      node.el.innerHTML = `<pre class="mermaid-fallback">${node.source.replace(/</g, '&lt;')}</pre>`;
+    }
+  }
+
+  async function mountMermaidBlocks() {
+    const blocks = findMermaidBlocks();
+    if (!blocks.length && !diagrams.length) return;
+
+    // First visit: replace Shiki <pre> blocks with diagram hosts.
+    for (const pre of blocks) {
+      const source = extractSource(/** @type {HTMLElement} */ (pre));
+      if (!source) continue;
+
+      const host = document.createElement('figure');
+      host.className = 'mermaid-diagram';
+      host.setAttribute('role', 'img');
+      host.setAttribute('aria-label', 'Diagram');
+      host.dataset.mermaidSource = source;
+      pre.replaceWith(host);
+      diagrams.push({ el: host, source });
+    }
+
+    renderPass += 1;
+    await Promise.all(diagrams.map((node, index) => drawDiagram(node, index)));
+  }
+
+  // Re-render when the site theme toggles light/dark.
+  function watchTheme() {
+    let timer = 0;
+    const observer = new MutationObserver(() => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        void mountMermaidBlocks();
+      }, 50);
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      void mountMermaidBlocks();
+      watchTheme();
+    });
+  } else {
+    void mountMermaidBlocks();
+    watchTheme();
+  }
+</script>

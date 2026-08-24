@@ -55,6 +55,16 @@ Use 301 if the mapping is permanent and you want browsers and CDNs to cache the 
 
 The hot path is:
 
+```mermaid
+flowchart LR
+  Client -->|GET /cb| Edge
+  Edge --> Cache{Cache hit?}
+  Cache -->|yes| Redirect[301 / 302]
+  Cache -->|no| DB[(Database)]
+  DB --> Fill[Fill cache]
+  Fill --> Redirect
+```
+
 1. Lookup code in cache.
 2. On miss, lookup in the database.
 3. Fill the cache.

@@ -197,3 +197,29 @@ html.dark .prose .astro-code span {
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+
+/* Mermaid diagrams rendered from Markdown (no image files). */
+.prose .mermaid-diagram {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--code-bg);
+  overflow-x: auto;
+  text-align: center;
+}
+
+.prose .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose .mermaid-diagram[data-mermaid-error='true'] {
+  text-align: left;
+}
+
+.prose .mermaid-fallback {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+}

@@ -1,17 +1,18 @@
 ---
 title: "System Design Interview: Designing a Rate Limiter"
-description: "A complete rate limiter design: algorithms, Redis implementations, distributed coordination, and the interview trade-offs that matter."
+description: "A complete rate limiter design: algorithms, Redis implementations,
+  distributed coordination, and the interview trade-offs that matter."
 pubDate: 2026-08-20
 updatedDate: 2026-08-22
-author: "Pankaj Chauhan"
-category: "System Design"
+author: Pankaj Chauhan
+category: System Design
 tags:
   - Rate Limiting
   - Redis
   - System Design
   - Interviews
-heroImage: "/images/blog/rate-limiter.svg"
-heroImageAlt: "Token bucket illustration used to explain rate limiting"
+heroImage: ""
+heroImageAlt: Token bucket illustration used to explain rate limiting
 draft: false
 featured: true
 trending: true
@@ -19,12 +20,18 @@ trending: true
 
 A rate limiter decides whether a request may proceed. In interviews, the prompt is usually “protect an API.” In production, the prompt is “protect this API, this user, this IP, and this expensive endpoint, without adding a new outage mode.”
 
+```mermaid
+flowchart LR
+  Client --> API --> Cache
+  Cache --> DB
+```
+
 Start by pinning the requirement:
 
-- Limit: 100 requests / minute / API key
-- Decision latency: low milliseconds
-- Accuracy: approximate is acceptable
-- Failure mode: fail open or fail closed?
+* Limit: 100 requests / minute / API key
+* Decision latency: low milliseconds
+* Accuracy: approximate is acceptable
+* Failure mode: fail open or fail closed?
 
 That last question is the one many answers skip. If Redis is down, do you block everyone or risk a flood?
 
@@ -89,12 +96,12 @@ Clients can back off. Support teams can debug. Your future self can tell a quota
 
 ## Interview checklist
 
-- Name the key: user, IP, token, route, or a tuple.
-- Pick an algorithm and say what bursts you allow.
-- Put state in Redis and mention atomicity.
-- Decide fail open versus fail closed.
-- Return 429 with `Retry-After`.
-- Talk about hot keys (one celebrity user) and sharding the counter.
-- Mention that rate limiting is not authentication.
+* Name the key: user, IP, token, route, or a tuple.
+* Pick an algorithm and say what bursts you allow.
+* Put state in Redis and mention atomicity.
+* Decide fail open versus fail closed.
+* Return 429 with `Retry-After`.
+* Talk about hot keys (one celebrity user) and sharding the counter.
+* Mention that rate limiting is not authentication.
 
 A strong close: rate limiting protects capacity. It does not replace authn, authz, or backpressure inside the service. If the expensive query still runs for allowed requests, you have a limiter and you still have a fire.
