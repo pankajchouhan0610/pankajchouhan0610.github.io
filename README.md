@@ -2,7 +2,7 @@
 
 Personal technology blog by Pankaj Chauhan covering software engineering, system design, distributed systems, databases, backend engineering, and AI.
 
-Posts live in Git as Markdown. There is no application database. GitHub is the source of truth. GitHub Pages hosts the public site. The `/admin` editor works locally and is locked on the live site.
+Posts live in Git as Markdown. There is no application database. GitHub is the source of truth. Cloudflare Pages hosts the public site (free) and runs `/api/auth` for the CMS.
 
 ## Local development
 
@@ -134,33 +134,36 @@ To appear in Google Search:
 1. Keep `draft: false` on posts you want indexed
 2. Write a clear `description` (about 120–160 characters)
 3. Use a real `title`, meaningful headings (`##`), and alt text on images
-4. Submit `https://pankajchouhan0610.github.io/sitemap-index.xml` in [Google Search Console](https://search.google.com/search-console)
+4. Submit `https://pankaj-bg4.pages.dev/sitemap-index.xml` in [Google Search Console](https://search.google.com/search-console)
 
 Set `PUBLIC_SITE_URL` to your canonical origin before building so canonical tags, sitemap, and CMS OAuth use the correct domain.
 
-## GitHub hosting (free)
+## Hosting (Cloudflare Pages — recommended, free)
 
-Yes, GitHub works. The repository is the source of truth, and GitHub Pages serves the static site for free.
+**Primary host:** Cloudflare Pages (supports live `/admin` + GitHub OAuth).
 
-Live site after deploy:
+Follow the full checklist in [CLOUDFLARE.md](./CLOUDFLARE.md).
 
-- https://pankajchouhan0610.github.io
+Expected live URL after setup:
 
-Repository:
+- https://pankaj-bg4.pages.dev
+
+Repository (source of truth):
 
 - https://github.com/pankajchouhan0610/pankajchouhan0610.github.io
 
-Every push to `main` runs `.github/workflows/deploy-github-pages.yml`, builds Astro, and publishes Pages.
+## GitHub Pages (backup mirror)
 
-The repo must stay **public** for free GitHub Pages on a personal account.
+GitHub Pages still deploys from `main` to https://pankajchouhan0610.github.io, but **`/api/auth` does not work there**. Use the Cloudflare URL for the CMS.
 
 ## Admin security
 
-`/admin` asks for a **password only**. The editor does not load until the password is correct.
+`/admin` asks for a **password**, then Decap asks you to **Login with GitHub** (on Cloudflare).
 
-GitHub Pages is static, so the page checks a hash of the password in the browser. The plaintext password is not stored in the repository. This blocks casual visitors; it is not as strong as server-side auth.
+- Password: blocks casual visitors
+- GitHub OAuth: lets only you commit posts to the repo
 
-After unlock, Decap may still need GitHub permission to save posts on the live site. Locally, use `npm run dev` + `npx decap-server`. You can also edit Markdown under `src/content/blog/` on GitHub.
+Locally, use `npm run dev` + `npx decap-server`. You can also edit Markdown under `src/content/blog/` on GitHub.
 
 ## Decap CMS (local)
 
@@ -170,29 +173,11 @@ npx decap-server
 
 Keep `npm run dev` running. In development, `/admin/config.yml` enables `local_backend`, so the CMS writes to your working tree.
 
-## Cloudflare Pages (optional)
-
-Cloudflare Pages is also free and can sit on the same GitHub repo if you want a custom domain plus optional production CMS OAuth.
-
-1. Import the GitHub repository in Cloudflare Pages.
-2. Build command: `npm run build`
-3. Output directory: `dist`
-4. Node version: `22`
-5. Set `PUBLIC_SITE_URL` to the Cloudflare URL or custom domain.
-
 ## Custom domain
 
-### GitHub Pages
-
-1. Repo → Settings → Pages → Custom domain
-2. Add a `CNAME` DNS record to `pankajchouhan0610.github.io`
-3. Set `PUBLIC_SITE_URL=https://your-domain` in the GitHub Actions env and rebuild
-
-### Cloudflare Pages
-
-1. Open the Pages project → Custom domains
-2. Add the domain
-3. Set `PUBLIC_SITE_URL` and rebuild
+1. Cloudflare Pages project → **Custom domains** → add your domain
+2. Update the GitHub OAuth App homepage + callback to `https://your-domain/api/auth`
+3. Set `PUBLIC_SITE_URL=https://your-domain` in Cloudflare and redeploy
 
 
 ## Analytics

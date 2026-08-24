@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "pages:deploy": "npm run build && wrangler pages deploy dist --project-name=pankaj"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",

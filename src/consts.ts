@@ -12,7 +12,7 @@ export const AUTHOR_IMAGE = '/images/pankaj.jpg';
 export const AUTHOR_LINKEDIN = 'https://www.linkedin.com/in/pankajchouhan0610/';
 
 /** Fallback origin when PUBLIC_SITE_URL is not set at build time. */
-export const FALLBACK_SITE_URL = 'https://pankajchouhan0610.github.io';
+export const FALLBACK_SITE_URL = 'https://pankaj-bg4.pages.dev';
 
 export const PAGE_SIZE = 10;
 export const WORDS_PER_MINUTE = 220;
