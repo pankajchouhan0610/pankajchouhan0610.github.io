@@ -11,7 +11,7 @@ tags:
   - Redis
   - System Design
   - Interviews
-heroImage: /images/blog/rate-limiter.svg
+heroImage: ""
 heroImageAlt: Token bucket illustration used to explain rate limiting
 draft: false
 featured: true
