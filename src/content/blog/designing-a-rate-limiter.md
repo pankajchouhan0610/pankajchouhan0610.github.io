@@ -24,10 +24,12 @@ flowchart LR
 ```
 
  limiter decides whether a request may proceed. In interviews, the prompt is usually “protect an API.” In production, the prompt is “protect this API, this user, this IP, and this expensive endpoint, without adding a new outage mode.”
+
 ```mermaid
 flowchart LR
   Client --> API --> Cache --> DB
 ```
+
 Start by pinning the requirement:
 
 * Limit: 100 requests / minute / API key
