@@ -1,9 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { AUTHOR_BIO, AUTHOR_NAME, AUTHOR_ROLE, SITE_NAME } from '../consts';
+import {
+  AUTHOR_BIO,
+  AUTHOR_IMAGE,
+  AUTHOR_LINKEDIN,
+  AUTHOR_NAME,
+  AUTHOR_ROLE,
+  SITE_NAME,
+  FALLBACK_SITE_URL,
+} from '../consts';
 import { getPublishedPosts } from '../lib/posts';
 import { breadcrumbJsonLd, personJsonLd } from '../lib/seo';
-import { FALLBACK_SITE_URL } from '../consts';
 
 const allPosts = await getPublishedPosts();
 const site = Astro.site?.href ?? FALLBACK_SITE_URL;
@@ -27,18 +34,39 @@ const person = {
   ]}
 >
   <article class="mx-auto max-w-[720px] px-5 py-12 md:px-8">
-    <p class="text-sm text-[var(--muted)]">{AUTHOR_ROLE}</p>
-    <h1 class="mt-2 text-3xl font-bold tracking-tight">{AUTHOR_NAME}</h1>
-    <div class="prose mt-6">
+    <div class="flex items-center gap-4">
+      <img
+        src={AUTHOR_IMAGE}
+        alt={AUTHOR_NAME}
+        width="72"
+        height="72"
+        class="h-[72px] w-[72px] rounded-full object-cover"
+      />
+      <div>
+        <p class="text-sm text-[var(--muted)]">{AUTHOR_ROLE}</p>
+        <h1 class="mt-1 text-3xl font-bold tracking-tight">{AUTHOR_NAME}</h1>
+        <p class="mt-2">
+          <a
+            class="text-sm font-medium hover:text-[var(--accent)]"
+            href={AUTHOR_LINKEDIN}
+            target="_blank"
+            rel="noopener noreferrer me"
+          >
+            LinkedIn profile
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="prose mt-8">
       <p>{AUTHOR_BIO}</p>
       <p>
-        This is my personal technology blog. The writing focuses on how production
-        systems actually work: locking, partitioning, rate limiting, data modeling, and the
-        operational details that show up after the whiteboard diagram is done.
+        This is my personal technology blog. The writing focuses on how production systems actually
+        work: locking, partitioning, rate limiting, data modeling, and the operational details that
+        show up after the whiteboard diagram is done.
       </p>
       <p>
-        Posts are written in Markdown, stored in GitHub, and edited through a small CMS. There is
-        no application database for articles. The repository is the source of truth.
+        Posts are written in Markdown, stored in GitHub, and edited through a small CMS. There is no
+        application database for articles. The repository is the source of truth.
       </p>
       <h2>What you will find here</h2>
       <ul>

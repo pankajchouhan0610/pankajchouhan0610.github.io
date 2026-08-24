@@ -8,6 +8,8 @@ export const AUTHOR_NAME = 'Pankaj Chauhan';
 export const AUTHOR_ROLE = 'Software Engineer';
 export const AUTHOR_BIO =
   'I write about building reliable software: distributed systems, databases, backend engineering, and the trade-offs behind production architecture.';
+export const AUTHOR_IMAGE = '/images/pankaj.jpg';
+export const AUTHOR_LINKEDIN = 'https://www.linkedin.com/in/pankajchouhan0610/';
 
 /** Fallback origin when PUBLIC_SITE_URL is not set at build time. */
 export const FALLBACK_SITE_URL = 'https://pankajchouhan0610.github.io';

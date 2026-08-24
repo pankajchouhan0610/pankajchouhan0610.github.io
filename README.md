@@ -121,6 +121,21 @@ Generated files:
 - `/robots.txt`
 - `/rss.xml`
 
+Every published post automatically gets:
+
+- Unique title and meta description from frontmatter
+- Canonical URL
+- Open Graph + Twitter cards
+- `BlogPosting` JSON-LD with author, dates, tags, and category
+- Inclusion in the sitemap and RSS feed when `draft: false`
+
+To appear in Google Search:
+
+1. Keep `draft: false` on posts you want indexed
+2. Write a clear `description` (about 120–160 characters)
+3. Use a real `title`, meaningful headings (`##`), and alt text on images
+4. Submit `https://pankajchouhan0610.github.io/sitemap-index.xml` in [Google Search Console](https://search.google.com/search-console)
+
 Set `PUBLIC_SITE_URL` to your canonical origin before building so canonical tags, sitemap, and CMS OAuth use the correct domain.
 
 ## GitHub hosting (free)

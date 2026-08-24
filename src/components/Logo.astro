@@ -1,13 +1,15 @@
 ---
-interface Props {
-  compact?: boolean;
-}
-
-const { compact = false } = Astro.props;
 ---
 
-<a href="/" class:list={['inline-flex items-center gap-2 no-underline text-[var(--ink)]', compact ? '' : '']}>
-  <span class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--accent)] text-sm font-semibold text-white" aria-hidden="true">P</span>
+<a href="/" class="inline-flex items-center gap-2.5 no-underline text-[var(--ink)]">
+  <img
+    src="/images/pankaj.jpg"
+    alt="Pankaj Chauhan"
+    width="32"
+    height="32"
+    class="h-8 w-8 rounded-full object-cover"
+    decoding="async"
+  />
   <span class="text-[1.35rem] font-bold tracking-tight">Pankaj</span>
   <span class="sr-only">Pankaj home</span>
 </a>

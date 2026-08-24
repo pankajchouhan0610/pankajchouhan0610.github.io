@@ -1,4 +1,11 @@
-import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from '../consts';
+import {
+  AUTHOR_IMAGE,
+  AUTHOR_LINKEDIN,
+  AUTHOR_NAME,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+} from '../consts';
 import { absoluteUrl } from './urls';
 
 type JsonLd = Record<string, unknown>;
@@ -8,7 +15,9 @@ export function personJsonLd(site: string): JsonLd {
     '@type': 'Person',
     name: AUTHOR_NAME,
     url: absoluteUrl('/about', site),
+    image: absoluteUrl(AUTHOR_IMAGE, site),
     jobTitle: 'Software Engineer',
+    sameAs: [AUTHOR_LINKEDIN],
   };
 }
 
@@ -84,8 +93,17 @@ export function articleJsonLd(options: {
       '@type': 'Person',
       name: author,
       url: absoluteUrl('/about', site),
+      image: absoluteUrl(AUTHOR_IMAGE, site),
+      sameAs: [AUTHOR_LINKEDIN],
     },
-    publisher: personJsonLd(site),
+    publisher: {
+      ...personJsonLd(site),
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/apple-touch-icon.png', site),
+      },
+    },
+    isAccessibleForFree: true,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,

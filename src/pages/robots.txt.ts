@@ -7,6 +7,14 @@ export const GET: APIRoute = ({ site }) => {
 Allow: /
 Disallow: /admin
 Disallow: /admin/
+Disallow: /search
+Disallow: /search-index.json
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /search
 Disallow: /search-index.json
 
 Sitemap: ${origin}/sitemap-index.xml
