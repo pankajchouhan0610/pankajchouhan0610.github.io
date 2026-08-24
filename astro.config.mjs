@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
-const site = process.env.PUBLIC_SITE_URL || 'https://pankaj-bg4.pages.dev';
+const site = process.env.PUBLIC_SITE_URL || 'https://pankajchouhan.dev';
 
 export default defineConfig({
   site,

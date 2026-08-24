@@ -153,7 +153,8 @@ const auth = getAdminAuthConfig();
         const link = document.createElement('link');
         link.rel = 'cms-config-url';
         link.type = 'text/yaml';
-        link.href = '/admin/config.yml';
+        // Use the Cloudflare Function so base_url matches the current domain.
+        link.href = '/api/cms-config';
         document.head.appendChild(link);
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js';

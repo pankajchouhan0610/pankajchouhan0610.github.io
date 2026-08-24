@@ -1,12 +1,12 @@
 /**
  * GitHub OAuth proxy for Decap CMS on Cloudflare Pages.
  *
- * Required Pages environment variables (Production + Preview):
+ * Required Pages secrets:
  * - GITHUB_CLIENT_ID
  * - GITHUB_CLIENT_SECRET
  *
- * GitHub OAuth App callback URL must be:
- *   https://YOUR_DOMAIN/api/auth
+ * GitHub OAuth App callback URL must match the site you open /admin on, e.g.:
+ *   https://pankajchouhan.dev/api/auth
  */
 export async function onRequest(context) {
   const { request, env } = context;
@@ -17,7 +17,7 @@ export async function onRequest(context) {
   if (request.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
-      headers: corsHeaders(url.origin),
+      headers: corsHeaders('*'),
     });
   }
 
@@ -30,7 +30,7 @@ export async function onRequest(context) {
 
   const error = url.searchParams.get('error');
   if (error) {
-    return oauthPage('error', { error }, url.origin);
+    return oauthPage('error', { error });
   }
 
   const code = url.searchParams.get('code');
@@ -44,7 +44,7 @@ export async function onRequest(context) {
     return Response.redirect(authorize.toString(), 302);
   }
 
-  // GitHub redirected back with a temporary code — exchange it for a token.
+  // Exchange the temporary code for an access token.
   const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -62,20 +62,12 @@ export async function onRequest(context) {
   const payload = await tokenResponse.json();
 
   if (!payload.access_token) {
-    return oauthPage(
-      'error',
-      {
-        error: payload.error_description || payload.error || 'token_exchange_failed',
-      },
-      url.origin,
-    );
+    return oauthPage('error', {
+      error: payload.error_description || payload.error || 'token_exchange_failed',
+    });
   }
 
-  return oauthPage(
-    'success',
-    { token: payload.access_token, provider: 'github' },
-    url.origin,
-  );
+  return oauthPage('success', { token: payload.access_token, provider: 'github' });
 }
 
 function corsHeaders(origin) {
@@ -86,8 +78,8 @@ function corsHeaders(origin) {
   };
 }
 
-function oauthPage(status, content, origin) {
-  // Decap CMS listens for this exact postMessage format from the popup.
+function oauthPage(status, content) {
+  // Decap requires this exact message shape. Use "*" so custom domains work.
   const message = `authorization:github:${status}:${JSON.stringify(content)}`;
   const html = `<!doctype html>
 <html lang="en">
@@ -101,9 +93,9 @@ function oauthPage(status, content, origin) {
       (function () {
         var receive = window.opener || window.parent;
         if (receive) {
-          receive.postMessage(${JSON.stringify(message)}, ${JSON.stringify(origin)});
+          receive.postMessage(${JSON.stringify(message)}, "*");
         }
-        window.close();
+        setTimeout(function () { window.close(); }, 100);
       })();
     </script>
   </body>
@@ -112,7 +104,7 @@ function oauthPage(status, content, origin) {
   return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      ...corsHeaders(origin),
+      ...corsHeaders('*'),
     },
   });
 }

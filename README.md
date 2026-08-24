@@ -134,7 +134,7 @@ To appear in Google Search:
 1. Keep `draft: false` on posts you want indexed
 2. Write a clear `description` (about 120–160 characters)
 3. Use a real `title`, meaningful headings (`##`), and alt text on images
-4. Submit `https://pankaj-bg4.pages.dev/sitemap-index.xml` in [Google Search Console](https://search.google.com/search-console)
+4. Submit `https://pankajchouhan.dev/sitemap-index.xml` in [Google Search Console](https://search.google.com/search-console)
 
 Set `PUBLIC_SITE_URL` to your canonical origin before building so canonical tags, sitemap, and CMS OAuth use the correct domain.
 
@@ -146,7 +146,8 @@ Follow the full checklist in [CLOUDFLARE.md](./CLOUDFLARE.md).
 
 Expected live URL after setup:
 
-- https://pankaj-bg4.pages.dev
+- https://pankajchouhan.dev
+- https://pankaj-bg4.pages.dev (Cloudflare project URL)
 
 Repository (source of truth):
 

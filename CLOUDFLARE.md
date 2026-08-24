@@ -4,20 +4,25 @@ This project is set up for **Cloudflare Pages** so `/admin` can use GitHub login
 
 GitHub stays the source of truth for Markdown. Cloudflare only builds and hosts the site.
 
-**Live site (already deployed):** https://pankaj-bg4.pages.dev
+**Live site (already deployed):** https://pankajchouhan.dev  
+**Cloudflare URL:** https://pankaj-bg4.pages.dev
 
-## 1. Create a GitHub OAuth App (required for live CMS)
+## 1. Create / update a GitHub OAuth App (required for live CMS)
 
-1. Open [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers) → **New OAuth App**
-2. Fill in:
+1. Open [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers)
+2. Edit your CMS OAuth App (or create one)
+3. Set:
    - **Application name:** `Pankaj Blog CMS`
-   - **Homepage URL:** `https://pankaj-bg4.pages.dev`
-   - **Authorization callback URL:** `https://pankaj-bg4.pages.dev/api/auth`
-3. Register the app
-4. Copy **Client ID**
-5. Generate a **Client secret** and copy it (shown once)
+   - **Homepage URL:** `https://pankajchouhan.dev`
+   - **Authorization callback URL (Redirect URI):** `https://pankajchouhan.dev/api/auth`
+4. Also add this Redirect URI if you still use the pages.dev host:
+   - `https://pankaj-bg4.pages.dev/api/auth`
+5. Save / Update application
+6. Copy **Client ID** and **Client secret**
 
 Do not commit these values.
+
+**Important:** The callback must be `/api/auth`, not `/admin`.
 
 ## 2. Add secrets in Cloudflare (existing project: `pankaj`)
 
@@ -27,7 +32,7 @@ Do not commit these values.
 
 | Name | Value | Secret? |
 |---|---|---|
-| `PUBLIC_SITE_URL` | `https://pankaj-bg4.pages.dev` | No |
+| `PUBLIC_SITE_URL` | `https://pankajchouhan.dev` | No |
 | `PUBLIC_GITHUB_REPO` | `pankajchouhan0610/pankajchouhan0610.github.io` | No |
 | `PUBLIC_GITHUB_BRANCH` | `main` | No |
 | `GITHUB_CLIENT_ID` | *(from OAuth App)* | Yes |
@@ -59,7 +64,7 @@ npm run pages:deploy
 
 ## 4. Use the CMS
 
-1. Open https://pankaj-bg4.pages.dev/admin
+1. Open https://pankajchouhan.dev/admin
 2. Enter the site password
 3. Click **Login with GitHub** and authorize
 4. Create/edit posts — Decap commits Markdown to GitHub
