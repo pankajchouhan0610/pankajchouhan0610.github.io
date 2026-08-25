@@ -8,6 +8,7 @@ pubDate: 2026-08-25
 updatedDate: 2026-08-25
 author: Pankaj Chauhan
 category: System Design
+heroImage: /images/blog/1_pdw7h5x6vqqnvopizhbg6a.jpg
 draft: false
 featured: false
 trending: false
