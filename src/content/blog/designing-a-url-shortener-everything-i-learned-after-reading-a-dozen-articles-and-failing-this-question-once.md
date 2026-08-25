@@ -10,8 +10,8 @@ author: Pankaj Chauhan
 category: System Design
 heroImage: /images/blog/1_pdw7h5x6vqqnvopizhbg6a.jpg
 draft: false
-featured: false
-trending: false
+featured: true
+trending: true
 ---
 I've now read this question in about six different write-ups, watched two videos on it, and got asked a version of it in a real interview. So instead of letting all that sit scattered in random tabs, I'm putting it down here the way I'd actually explain it to a friend before their interview — no fluff, no "let's dive in," just the stuff that matters.
  
