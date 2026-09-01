@@ -14,8 +14,6 @@ draft: false
 featured: true
 trending: true
 ---
-
-
 I found lots of tutorials on YouTube, Medium. I read all of them. Just like I do for other systems when I’m really curious. But I found they touch only the basic part. They don’t go into depth.
 
 So here I’m putting the things that I have read, understood from those blogs, videos.
@@ -145,8 +143,6 @@ flowchart LR
     style E fill:#111111,stroke:#ffffff,color:#ffffff
 ```
 
-
-
 So backend first creates a multipart upload on S3 and gets the UploadId. Then it generates presigned URLs for every chunk using that UploadId. Client takes those URLs and directly uploads the raw chunk data to S3. At the same time backend marks the file state as “Uploading” in the metadata database.
 
 After client finishes uploading all the chunks, it sends the list of PartNumber + ETag back to the backend. Backend then calls CompleteMultipartUpload on S3. Only after this call S3 merges all the chunks in order using the UploadId and ETags.
@@ -156,9 +152,6 @@ S3 doesn’t automatically notify the backend when parts are uploaded. The Compl
 UploadId stays the same for the entire file, while every chunk gets its own ETag. Both are needed for the final merge.
 
 If chunk 5 fails, S3 only throws error for that part. Client just retries chunk 5 again. No need to upload the whole file, so resuming after network failure becomes easy.
-
-
-
 
 ```mermaid
 flowchart LR
