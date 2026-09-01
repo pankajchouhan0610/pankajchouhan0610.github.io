@@ -14,6 +14,8 @@ draft: false
 featured: true
 trending: true
 ---
+
+
 I found lots of tutorials on YouTube, Medium. I read all of them. Just like I do for other systems when I’m really curious. But I found they touch only the basic part. They don’t go into depth.
 
 So here I’m putting the things that I have read, understood from those blogs, videos.
@@ -153,12 +155,16 @@ UploadId stays the same for the entire file, while every chunk gets its own ETag
 
 If chunk 5 fails, S3 only throws error for that part. Client just retries chunk 5 again. No need to upload the whole file, so resuming after network failure becomes easy.
 
+
+
+**Final diagram (Upload)**
+
 ```mermaid
-flowchart LR
+flowchart TD
     A["Client<br/>1.2 GB File"] --> B
 
     subgraph B["File Chunks"]
-        direction TB
+        direction LR
         C1["Chunk 1<br/>4 MB"]
         C2["Chunk 2<br/>4 MB"]
         C3["Chunk 3<br/>4 MB"]
@@ -167,39 +173,35 @@ flowchart LR
         C6["Chunk N<br/>4 MB"]
     end
 
-    B --> D["Generate SHA-256<br/>Hashes"]
-    D --> E["Metadata Server"]
+    B --> D["Generate SHA-256 Hashes"]
+    D --> E["Send Hash List to<br/>Metadata Server"]
 
     E --> F{"Which chunks<br/>already exist?"}
-    
-    F -->|Missing Chunks| G["Generate Presigned URLs<br/>+ UploadId"]
+
+    F -->|Missing Chunks| G["Backend generates<br/>Presigned URLs + UploadId"]
     F -->|Already Exist| H["Skip these chunks"]
 
-    G --> I["Client"]
-    
-    I --> J["Upload Missing Chunks<br/>Directly to S3<br/>(Parallel)"]
-    
+    G --> I["Client receives<br/>Presigned URLs"]
+
+    I --> J["Client uploads missing chunks<br/>directly to S3 in parallel"]
+
     J --> K["S3 Object Storage"]
-    
-    K --> L["Return ETag<br/>for each chunk"]
-    
-    L --> I
-    
-    I --> M["Send PartNumber + ETag list<br/>to Backend"]
-    
-    M --> N["Backend / Metadata Server"]
-    
-    N --> O["CompleteMultipartUpload<br/>call to S3"]
-    
+
+    K --> L["S3 returns ETag<br/>for each chunk"]
+
+    L --> M["Client collects all<br/>PartNumber + ETag"]
+
+    M --> N["Client sends PartNumber + ETag list<br/>to Backend"]
+
+    N --> O["Backend calls<br/>CompleteMultipartUpload"]
+
     O --> K
-    
+
     K --> P["S3 merges all chunks<br/>Final File Created"]
-    
-    P --> N
-    
-    N --> Q["Update Metadata DB<br/>Status = Completed"]
-    
-    Q --> R["Trigger Notification<br/>Service"]
+
+    P --> Q["Backend updates Metadata DB<br/>Status = Completed"]
+
+    Q --> R["Trigger Notification Service"]
 
     style A fill:#111111,stroke:#ffffff,color:#ffffff
     style B fill:#111111,stroke:#ffffff,color:#ffffff
@@ -225,3 +227,8 @@ flowchart LR
     style Q fill:#111111,stroke:#ffffff,color:#ffffff
     style R fill:#111111,stroke:#ffffff,color:#ffffff
 ```
+
+
+
+This is all for now, I hope you enjoyed this blog. I will cover the next part soon, which is downloading the file and syncing of file too.\
+Thanks
