@@ -1,11 +1,11 @@
 ---
 title: "Why Scaling writes is the hardest problem "
 description: Sometimes Writing to database is more hard than reading.
-pubDate: 2026-08-08
+pubDate: 2026-08-22
 author: Pankaj Chauhan
 category: System Design
 heroImage: /images/blog/dknfxihczujqguwwhhbxsk.jpg
-draft: true
+draft: false
 featured: false
 trending: false
 ---
