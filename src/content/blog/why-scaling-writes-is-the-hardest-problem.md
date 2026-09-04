@@ -6,8 +6,8 @@ author: Pankaj Chauhan
 category: System Design
 heroImage: /images/blog/dknfxihczujqguwwhhbxsk.jpg
 draft: false
-featured: false
-trending: false
+featured: true
+trending: true
 ---
 Scaling writes is harder compared to reads. Because when you read the data, you are not changing anything. So, using replicas and caching, it becomes easy to make reads fast.
 
